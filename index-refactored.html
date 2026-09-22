@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="uk" dir="ltr">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Дія" />
+    
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="apple-touch-icon-precomposed" href="assets/favicon.png" />
+    <link rel="manifest" href="assets/manifest.json" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.png" />
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <title>Дія</title>
+    
+    <style>
+        :root {
+            --ios-ease: cubic-bezier(0.32, 0.72, 0, 1);
+            --ios-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        @font-face {
+            font-family: 'e-Ukraine';
+            font-weight: 400;
+            font-display: swap;
+            src: local('e-Ukraine'), url('assets/e-Ukraine-Regular.woff') format('woff');
+        }
+        
+        @font-face {
+            font-family: 'e-UkraineHead';
+            font-weight: 300;
+            font-display: swap;
+            src: url('assets/e-UkraineHead-Light.woff') format('woff');
+        }
+        
+        @font-face {
+            font-family: 'e-UkraineHead';
+            font-weight: 500;
+            font-display: swap;
+            src: url('assets/e-UkraineHead-Medium.woff') format('woff');
+        }
+        
+        @font-face {
+            font-family: 'e-UkraineHead';
+            font-weight: 700;
+            font-display: swap;
+            src: url('assets/e-UkraineHead-Bold.woff') format('woff');
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'e-Ukraine', sans-serif;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .loadpage {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            background: #000;
+            overflow: hidden;
+            transition: opacity 0.45s ease-out;
+            pointer-events: all;
+        }
+        
+        .loadpage.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loadpage.hidden {
+            display: none !important;
+            pointer-events: none !important;
+        }
+        
+        .loadpage-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100dvh;
+            z-index: -1;
+        }
+        
+        .bg-start {
+            height: 100dvh;
+            width: 100%;
+            overflow: hidden;
+            background: linear-gradient(145deg, #b2d2e9 40%, #dbefd6 70%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            justify-content: center;
+        }
+        
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
+            }
+        }
+        
+        .swiper-pagination {
+            position: unset;
+        }
+        
+        .swiper-pagination > .swiper-pagination-bullet {
+            background: #fff;
+            opacity: 0.4;
+        }
+        
+        .swiper-pagination > .swiper-pagination-bullet-active {
+            background: #fff;
+            opacity: 1;
+        }
+        
+        .admin-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 90vw;
+            max-width: 400px;
+            max-height: 80vh;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .admin-panel.hidden {
+            display: none !important;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .admin-header h2 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .admin-header button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            overflow-x: auto;
+        }
+        
+        .admin-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 12px;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .admin-tab.active {
+            border-bottom-color: #0066cc;
+            color: #0066cc;
+            font-weight: bold;
+        }
+        
+        .admin-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            font-size: 12px;
+        }
+        
+        .admin-tab-content {
+            display: none;
+        }
+        
+        .admin-tab-content.active {
+            display: block;
+        }
+        
+        .admin-tab-content button {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .admin-tab-content button:hover {
+            background: #f5f5f5;
+        }
+        
+        .ai-message {
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            max-width: 80%;
+        }
+        
+        .ai-message-user {
+            background: #0066cc;
+            color: white;
+            margin-left: auto;
+        }
+        
+        .ai-message-ai {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .ai-typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px;
+        }
+        
+        .ai-typing-indicator span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Splash Screen -->
+    <div class="loadpage">
+        <video class="loadpage-video" autoplay muted playsinline>
+            <source src="assets/logo.mp4" type="video/mp4">
+        </video>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="bg-start">
+        <video class="video-background" autoplay muted loop playsinline>
+            <source src="assets/background_gradient.mp4" type="video/mp4">
+        </video>
+        
+        <!-- App content will be rendered here -->
+        <div id="app-root"></div>
+    </div>
+    
+    <!-- Core Dependencies (minimal and optimized) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js" defer></script>
+    
+    <!-- App Modules (loaded in order) -->
+    <script src="src/app.js" defer></script>
+    <script src="src/splash.js" defer></script>
+    <script src="src/storage.js" defer></script>
+    <script src="src/security.js" defer></script>
+    <script src="src/analytics.js" defer></script>
+    <script src="src/modals.js" defer></script>
+    <script src="src/cards.js" defer></script>
+    <script src="src/qr.js" defer></script>
+    <script src="src/ai.js" defer></script>
+    <script src="src/animations.js" defer></script>
+    <script src="src/admin.js" defer></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('public/sw.js').catch(() => {});
+        }
+    </script>
+</body>
+
+</html>
